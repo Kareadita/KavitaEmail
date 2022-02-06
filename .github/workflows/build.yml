@@ -27,6 +27,15 @@ jobs:
       - name: Install dependencies
         run: dotnet restore
 
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Bump versions
+        uses: ThomasEg/dotnet-bump-version@patch-1
+        with:
+          version_files: KavitaEmail/KavitaEmail.csproj
+          github_token: ${{ secrets.REPO_GHA_PAT }}
+
       - uses: actions/upload-artifact@v2
         with:
           name: csproj
@@ -43,6 +52,26 @@ jobs:
         id: findPr
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Parse PR body
+        id: parse-body
+        run: |
+          body="${{ steps.findPr.outputs.body }}"
+          if [[ ${#body} -gt 1870 ]] ; then
+            body=${body:0:1870}
+            body="${body}...and much more.
+
+            Read full changelog: https://github.com/Kareadita/Kavita/pull/${{ steps.findPr.outputs.pr }}"
+          fi
+
+          body=${body//\'/}
+          body=${body//'%'/'%25'}
+          body=${body//$'\n'/'%0A'}
+          body=${body//$'\r'/'%0D'}
+          body=${body//$'`'/'%60'}
+          body=${body//$'>'/'%3E'}
+          echo $body
+          echo "::set-output name=BODY::$body"
 
       - name: Check Out Repo
         uses: actions/checkout@v2
@@ -97,3 +126,12 @@ jobs:
 
       - name: Image digest
         run: echo ${{ steps.docker_build.outputs.digest }}
+
+      - name: Notify Discord
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+            severity: info
+            description: v${{steps.get-version.outputs.assembly-version}} - ${{ steps.findPr.outputs.title }}
+            details: '${{ steps.parse-body.outputs.BODY }}'
+            text: KavitaEmail ${{steps.get-version.outputs.assembly-version}} has been released.
+            webhookUrl: ${{ secrets.DISCORD_DOCKER_UPDATE_URL }}
