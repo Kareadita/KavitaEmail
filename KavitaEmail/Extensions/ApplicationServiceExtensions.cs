@@ -22,6 +22,7 @@ namespace Skeleton.Extensions
             services.AddSignalR();
             
             services.AddScoped<IEmailService, EmailService>();
+            services.AddScoped<IValidationService, ValidationService>();
             services.Configure<SmtpConfig>(config.GetSection(SmtpConfig.Key));
         }
 

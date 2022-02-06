@@ -12,7 +12,7 @@ namespace Skeleton
 {
     public class Program
     {
-        public const int HttpPort = 5003;
+        private const int HttpPort = 5003;
 
         public static async Task Main(string[] args)
         {

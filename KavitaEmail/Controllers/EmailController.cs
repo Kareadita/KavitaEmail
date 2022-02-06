@@ -23,11 +23,13 @@ namespace Skeleton.Controllers
     {
         private readonly ILogger<EmailController> _logger;
         private readonly IEmailService _emailService;
+        private readonly IValidationService _validationService;
 
-        public EmailController(ILogger<EmailController> logger, IEmailService emailService)
+        public EmailController(ILogger<EmailController> logger, IEmailService emailService, IValidationService validationService)
         {
             _logger = logger;
             _emailService = emailService;
+            _validationService = validationService;
         }
         
         /// <summary>
@@ -43,6 +45,7 @@ namespace Skeleton.Controllers
         [HttpPost("confirm")]
         public async Task<ActionResult> SendConfirmationEmail(ConfirmationEmailDto dto)
         {
+            if (!await _validationService.ValidateInstall(dto.InstallId)) return BadRequest("Not valid");
             await _emailService.SendEmailForEmailConfirmation(dto);
             return Ok();
         }
@@ -50,6 +53,7 @@ namespace Skeleton.Controllers
         [HttpPost("email-migration")]
         public async Task<ActionResult> SendEmailMigrationEmail(EmailMigrationDto dto)
         {
+            if (!await _validationService.ValidateInstall(dto.InstallId)) return BadRequest("Not valid");
             await _emailService.SendEmailMigrationEmail(dto);
             return Ok();
         }
@@ -57,6 +61,7 @@ namespace Skeleton.Controllers
         [HttpPost("email-password-reset")]
         public async Task<ActionResult> SendPasswordResetConfirmation(PasswordResetDto dto)
         {
+            if (!await _validationService.ValidateInstall(dto.InstallId)) return BadRequest("Not valid");
             await _emailService.SendPasswordResetEmail(dto);
             return Ok();
         }

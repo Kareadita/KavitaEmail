@@ -64,8 +64,6 @@ namespace Skeleton
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                //app.UseSwagger();
-                //app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "KavitaEmail v1"));
             }
             
             app.UseResponseCompression();
@@ -81,7 +79,6 @@ namespace Skeleton
                 app.UseCors(policy => policy
                     .AllowAnyHeader()
                     .AllowAnyMethod()
-                    .AllowCredentials() // For SignalR token query param (if using)
                     .WithOrigins("http://localhost:4200")
                     .WithExposedHeaders("Content-Disposition", "Pagination"));
             }
@@ -114,21 +111,13 @@ namespace Skeleton
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapFallbackToController("Index", "Fallback");
             });
             
-            applicationLifetime.ApplicationStopping.Register(OnShutdown);
             applicationLifetime.ApplicationStarted.Register(() =>
             {
-                Console.WriteLine($"Server has started up");
+                Console.WriteLine($"Kavita Email Service has started up");
             });
         }
         
-        private static void OnShutdown()
-        {
-            Console.WriteLine("Server is shutting down. Please allow a few seconds to stop any background jobs...");
-            System.Threading.Thread.Sleep(1000);
-            Console.WriteLine("You may now close the application window.");
-        }
     }
 }
