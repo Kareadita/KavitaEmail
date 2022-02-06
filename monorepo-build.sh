@@ -19,7 +19,7 @@ Build()
 
     ProgressStart "Build for $RID"
 
-    slnFile=Kavita.sln
+    slnFile=KavitaEmail.sln
 
     dotnet clean $slnFile -c Release
 
@@ -32,7 +32,7 @@ Package()
 {
     local framework="$1"
     local runtime="$2"
-    local lOutputFolder=../_output/"$runtime"/Kavita
+    local lOutputFolder=../_output/"$runtime"/KavitaEmail
 
     ProgressStart "Creating $runtime Package for $framework"
 
@@ -53,7 +53,7 @@ Package()
 
     echo "Creating tar"
     cd ../$outputFolder/"$runtime"/
-    tar -czvf ../kavita-$runtime.tar.gz Kavita
+    tar -czvf ../kavitaemail-$runtime.tar.gz KavitaEmail
 
     ProgressEnd "Creating $runtime Package for $framework"
 
