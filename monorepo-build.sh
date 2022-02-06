@@ -38,14 +38,14 @@ Package()
 
     # TODO: Use no-restore? Because Build should have already done it for us
     echo "Building"
-    cd API
+    cd KavitaEmail
     echo dotnet publish -c Release --no-restore --self-contained --runtime $runtime -o "$lOutputFolder" --framework $framework
     dotnet publish -c Release --no-restore --self-contained --runtime $runtime -o "$lOutputFolder" --framework $framework
 
     echo "Copying LICENSE"
     cp ../LICENSE "$lOutputFolder"/LICENSE.txt
 
-    echo "Show API structure"
+    echo "Show KavitaEmail structure"
     find
 
 	  echo "Copying appsettings.json"
