@@ -3,18 +3,6 @@ set -e
 
 outputFolder='_output'
 
-CheckRequirements()
-{
-    if ! command -v npm &> /dev/null
-    then
-        echo "Warning!!! npm not found, it is required for building Kavita!"
-    fi
-    if ! command -v dotnet &> /dev/null
-    then
-        echo "Warning!!! dotnet not found, it is required for building Kavita!"
-    fi
-}
-
 ProgressStart()
 {
     echo "Start '$1'"
@@ -25,81 +13,70 @@ ProgressEnd()
     echo "Finish '$1'"
 }
 
-
 Build()
 {
-    ProgressStart 'Build'
+	local RID="$1"
 
-    rm -rf $outputFolder
+    ProgressStart "Build for $RID"
 
-    slnFile=Kavita.sln
+    slnFile=KavitaEmail.sln
 
     dotnet clean $slnFile -c Release
 
-    if [[ -z "$RID" ]];
-    then
-        dotnet msbuild -restore $slnFile -p:Configuration=Release -p:Platform="Any CPU"
-    else
-        dotnet msbuild -restore $slnFile -p:Configuration=Release -p:Platform="Any CPU" -p:RuntimeIdentifiers=$RID
-    fi
+	dotnet msbuild -restore $slnFile -p:Configuration=Release -p:Platform="Any CPU" -p:RuntimeIdentifiers=$RID
 
-    ProgressEnd 'Build'
+    ProgressEnd "Build for $RID"
 }
 
 Package()
 {
     local framework="$1"
     local runtime="$2"
-    local lOutputFolder=../_output/"$runtime"/Kavita
+    local lOutputFolder=../_output/"$runtime"/KavitaEmail
 
     ProgressStart "Creating $runtime Package for $framework"
 
     # TODO: Use no-restore? Because Build should have already done it for us
     echo "Building"
-    cd API
-    echo dotnet publish -c Release --self-contained --runtime $runtime -o "$lOutputFolder" --framework $framework
-    dotnet publish -c Release --self-contained --runtime $runtime -o "$lOutputFolder" --framework $framework
+    cd KavitaEmail
+    echo dotnet publish -c Release --no-restore --self-contained --runtime $runtime -o "$lOutputFolder" --framework $framework
+    dotnet publish -c Release --no-restore --self-contained --runtime $runtime -o "$lOutputFolder" --framework $framework
 
     echo "Copying LICENSE"
     cp ../LICENSE "$lOutputFolder"/LICENSE.txt
 
-    echo "Copying appsettings.json"
-    cp config/appsettings.Development.json $lOutputFolder/config/appsettings.json
+    echo "Show KavitaEmail structure"
+    find
+
+	  echo "Copying appsettings.json"
+    cp ./config/appsettings.Development.json $lOutputFolder/config/appsettings.json
 
     echo "Creating tar"
     cd ../$outputFolder/"$runtime"/
-    tar -czvf ../kavita-$runtime.tar.gz Kavita
-
+    tar -czvf ../kavitaemail-$runtime.tar.gz KavitaEmail
 
     ProgressEnd "Creating $runtime Package for $framework"
 
-
 }
-
-RID="$1"
-
-CheckRequirements
-Build
 
 dir=$PWD
 
-if [[ -z "$RID" ]];
+if [ -d _output ]
 then
-    Package "net6.0" "win-x64"
-    cd "$dir"
-    Package "net6.0" "win-x86"
-    cd "$dir"
-    Package "net6.0" "linux-x64"
-    cd "$dir"
-    Package "net6.0" "linux-arm"
-    cd "$dir"
-    Package "net6.0" "linux-arm64"
-    cd "$dir"
-    Package "net6.0" "linux-musl-x64"
-    cd "$dir"
-    Package "net6.0" "osx-x64"
-    cd "$dir"
-else
-    Package "net6.0" "$RID"
-    cd "$dir"
+	rm -r _output/
 fi
+
+#Build for x64
+Build "linux-x64"
+Package "net6.0" "linux-x64"
+cd "$dir"
+
+#Build for arm
+Build "linux-arm"
+Package "net6.0" "linux-arm"
+cd "$dir"
+
+#Build for arm64
+Build "linux-arm64"
+Package "net6.0" "linux-arm64"
+cd "$dir"

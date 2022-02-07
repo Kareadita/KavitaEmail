@@ -1,18 +1,12 @@
 #! /bin/bash
 
-if [ -d /app/config ]; then
-  if [ -f /app/config/appsettings.json ] && [ -d /app/config/templates ]; then
-    #Directory is not empty, do nothing
-    echo "Config directory exists, skipping copy..."
-    #Makes sure the templates folder is up to date without wiping out appsettings
-    rsync -azP /tmpconfig/templates/ /app/config/templates/
-  else
-    #Directory is empty, copy files in from the temp config
-    rsync -azP /tmpconfig/ /app/config/
-    mv /app/config/appsettings.Development.json /app/config/appsettings.json
-    rm -r /tmpconfig
-  fi
-fi
+#Applies environment variables
+sed -i "s/\"Host\": \"\"/\"Host\": \"$SMTP_HOST\"/" /app/config/appsettings.json
+sed -i "s/\"Port\": \"\"/\"Port\": \"$SMTP_PORT\"/" /app/config/appsettings.json
+sed -i "s/\"UserName\": \"\"/\"UserName\": \"$SMTP_USER\"/" /app/config/appsettings.json
+sed -i "s/\"Password\": \"\"/\"Password\": \"$SMTP_PASS\"/" /app/config/appsettings.json
+sed -i "s/\"SenderAddress\": \"\"/\"SenderAddress\": \"$SEND_ADDR\"/" /app/config/appsettings.json
+sed -i "s/\"SenderDisplayName\": \"\"/\"SenderDisplayName\": \"$DISP_NAME\"/" /app/config/appsettings.json
 
 chmod +x KavitaEmail
 
