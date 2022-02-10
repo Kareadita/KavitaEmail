@@ -80,3 +80,19 @@ cd "$dir"
 Build "linux-arm64"
 Package "net6.0" "linux-arm64"
 cd "$dir"
+
+Build "win-x64"
+Package "net6.0" "win-x64"
+cd "$dir"
+
+Build "win-x86"
+Package "net6.0" "win-x86"
+cd "$dir"
+
+Build "osx-x64"
+Package "net6.0" "osx-x64"
+cd "$dir"
+
+Build "linux-musl-x64"
+Package "net6.0" "linux-musl-x64"
+cd "$dir"

@@ -485,7 +485,7 @@ Thumbs.db
 ssl/
 
 # App specific
-appsettings.json
+appsettings.Development.json
 *.db
 _temp/
 _output/

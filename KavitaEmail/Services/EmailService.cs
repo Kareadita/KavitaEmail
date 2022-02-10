@@ -95,7 +95,8 @@ public class EmailService : IEmailService
             Subject = userEmailOptions.Subject,
             Body = userEmailOptions.Body,
             From = new MailAddress(_smtpConfig.SenderAddress, _smtpConfig.SenderDisplayName),
-            IsBodyHtml = _smtpConfig.IsBodyHtml
+            IsBodyHtml = _smtpConfig.IsBodyHtml,
+            BodyEncoding = Encoding.Default
         };
         
         foreach (var toEmail in userEmailOptions.ToEmails)
@@ -113,9 +114,7 @@ public class EmailService : IEmailService
             Credentials = new NetworkCredential(_smtpConfig.SenderAddress, _smtpConfig.Password),
             Timeout = 20000
         };
-        
-        mail.BodyEncoding = Encoding.Default;
-        
+
         await smtpClient.SendMailAsync(mail);
     }
 

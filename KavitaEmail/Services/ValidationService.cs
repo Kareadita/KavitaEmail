@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Flurl.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Skeleton.Controllers;
 
 namespace Skeleton.Services;
@@ -13,11 +14,13 @@ public interface IValidationService
 
 public class ValidationService : IValidationService
 {
+    private readonly ILogger<ValidationService> _logger;
     private readonly IConfiguration _configuration;
     private const string StatsApiUrl = "https://stats.kavitareader.com";
 
-    public ValidationService(IConfiguration configuration)
+    public ValidationService(ILogger<ValidationService> logger, IConfiguration configuration)
     {
+        _logger = logger;
         _configuration = configuration;
         
         FlurlHttp.ConfigureClient(StatsApiUrl, cli =>
@@ -39,7 +42,7 @@ public class ValidationService : IValidationService
         return await SendEmailWithGet(StatsApiUrl + "/api/v2/stats/validate?installId=" + installId);
     }
     
-    private static async Task<bool> SendEmailWithGet(string url)
+    private async Task<bool> SendEmailWithGet(string url)
     {
         try
         {
@@ -56,8 +59,9 @@ public class ValidationService : IValidationService
                 return true;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            _logger.LogError(ex, "Exception occured when validating install");
             return false;
         }
         return false;
