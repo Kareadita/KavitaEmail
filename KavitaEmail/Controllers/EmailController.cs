@@ -45,7 +45,11 @@ namespace Skeleton.Controllers
         [HttpPost("confirm")]
         public async Task<ActionResult> SendConfirmationEmail(ConfirmationEmailDto dto)
         {
-            if (!await _validationService.ValidateInstall(dto.InstallId)) return BadRequest("Not valid");
+            if (!await _validationService.ValidateInstall(dto.InstallId))
+            {
+                _logger.LogError("An installID {InstallId} was not valid, request rejected for confirmation email", dto.InstallId);
+                return BadRequest("Not valid");
+            }
             await _emailService.SendEmailForEmailConfirmation(dto);
             return Ok();
         }
@@ -62,6 +66,7 @@ namespace Skeleton.Controllers
         public async Task<ActionResult> SendPasswordResetConfirmation(PasswordResetDto dto)
         {
             if (!await _validationService.ValidateInstall(dto.InstallId)) return BadRequest("Not valid");
+            _logger.LogInformation("Email Password Reset called");
             await _emailService.SendPasswordResetEmail(dto);
             return Ok();
         }
@@ -91,7 +96,7 @@ namespace Skeleton.Controllers
                     return Ok(false);
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Ok(false);
             }
