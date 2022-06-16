@@ -39,7 +39,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: csproj
-          path: KavitaEmail/KavitaEmail.csproj
+          path: KavitaEmail/KavitaEmail/KavitaEmail.csproj
   stable:
     name: Build Docker and push
     needs: [ build ]
