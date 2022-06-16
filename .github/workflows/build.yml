@@ -30,11 +30,6 @@ jobs:
       - name: Build
         run: dotnet build --configuration Release --no-restore
 
-      - uses: actions/upload-artifact@v2
-        with:
-          name: csproj
-          path: KavitaEmail/KavitaEmail.csproj
-
   version:
     name: Bump version on Stable Push
     runs-on: ubuntu-latest
