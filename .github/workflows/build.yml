@@ -61,6 +61,11 @@ jobs:
         with:
           version_files: Kavita.Common/Kavita.Common.csproj
           github_token: ${{ secrets.REPO_GHA_PAT }}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: csproj
+          path: Kavita.Common/Kavita.Common.csproj
   stable:
     name: Build Docker and push
     needs: [ version ]
