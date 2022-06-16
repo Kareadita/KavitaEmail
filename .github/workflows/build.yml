@@ -54,13 +54,13 @@ jobs:
       - name: Bump versions
         uses: ThomasEg/dotnet-bump-version@patch-1
         with:
-          version_files: Kavita.Common/Kavita.Common.csproj
+          version_files: KavitaEmail/KavitaEmail.csproj
           github_token: ${{ secrets.REPO_GHA_PAT }}
 
       - uses: actions/upload-artifact@v2
         with:
           name: csproj
-          path: Kavita.Common/Kavita.Common.csproj
+          path: KavitaEmail/KavitaEmail.csproj
   stable:
     name: Build Docker and push
     needs: [ version ]
