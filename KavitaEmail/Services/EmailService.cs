@@ -111,7 +111,7 @@ public class EmailService : IEmailService
             EnableSsl = _smtpConfig.EnableSsl,
             DeliveryMethod = SmtpDeliveryMethod.Network,
             UseDefaultCredentials = _smtpConfig.UseDefaultCredentials,
-            Credentials = new NetworkCredential(_smtpConfig.SenderAddress, _smtpConfig.Password),
+            Credentials = new NetworkCredential(_smtpConfig.UserName, _smtpConfig.Password),
             Timeout = 20000
         };
 
