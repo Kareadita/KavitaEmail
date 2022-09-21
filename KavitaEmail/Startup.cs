@@ -12,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using Skeleton.Extensions;
 
 namespace Skeleton
@@ -96,6 +97,8 @@ namespace Skeleton
             {
                 ContentTypeProvider = new FileExtensionContentTypeProvider()
             });
+            
+            app.UseSerilogRequestLogging();
 
             app.Use(async (context, next) =>
             {
