@@ -4,6 +4,7 @@ using Flurl.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Skeleton.Controllers;
+using Skeleton.Misc;
 
 namespace Skeleton.Services;
 
