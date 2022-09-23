@@ -12,4 +12,8 @@ public class SmtpConfig
     public bool EnableSsl { get; set; } = true;
     public bool UseDefaultCredentials { get; set; } = false;
     public bool IsBodyHtml { get; set; } = true;
+    /// <summary>
+    /// If enabled, this allows Kavita to upload files (temporarily) and send the files as attachments
+    /// </summary>
+    public bool AllowSendTo { get; set; }
 }
