@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
@@ -68,7 +69,8 @@ public class SendToController : BaseApiController
         foreach (var formFile in formCollection.Files)
         {
             if (formFile.Length <= 0) continue;
-            var filename = formFile.FileName.Replace('.', '_');
+            var lastIndex = formFile.FileName.LastIndexOf(".", StringComparison.Ordinal);
+            var filename = formFile.FileName.Substring(0, lastIndex).Replace('.', '_');
 
             if (!Directory.Exists(_tempPath)) Directory.CreateDirectory(_tempPath);
             var tempFile = Path.Join(_tempPath, filename);
