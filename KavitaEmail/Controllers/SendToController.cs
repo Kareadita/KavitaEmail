@@ -42,7 +42,6 @@ public class SendToController : BaseApiController
     {
         if (!_smtpConfig.AllowSendTo) return BadRequest("This API is not enabled");
         
-        // Note to self: don't use filename for any logging unless it's escaped
         _logger.LogInformation("Received a Send to request for {FileCount} files", formCollection.Files.Count);
 
         if (!formCollection.ContainsKey("email") || string.IsNullOrEmpty(formCollection["email"]))
