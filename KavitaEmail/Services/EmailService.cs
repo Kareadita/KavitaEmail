@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
@@ -14,6 +15,7 @@ public interface IEmailService
     Task SendEmailForEmailConfirmation(ConfirmationEmailDto userEmailOptions);
     Task SendEmailMigrationEmail(EmailMigrationDto dto);
     Task SendPasswordResetEmail(PasswordResetDto dto);
+    Task SendToDevice(string emailAddress, IList<Attachment> attachments);
 }
 
 public class EmailService : IEmailService
@@ -88,23 +90,48 @@ public class EmailService : IEmailService
         await SendEmail(emailOptions);
     }
 
+    public async Task SendToDevice(string emailAddress, IList<Attachment> attachments)
+    {
+        
+        var emailOptions = new EmailOptionsDto()
+        {
+            Subject = "Send file from Kavita",
+            ToEmails = new List<string>()
+            {
+                emailAddress
+            },
+            Attachments = attachments
+        };
+
+        await SendEmail(emailOptions);
+    }
+
     private async Task SendEmail(EmailOptionsDto userEmailOptions)
     {
-        var mail = new MailMessage
+        using var mail = new MailMessage
         {
             Subject = userEmailOptions.Subject,
             Body = userEmailOptions.Body,
             From = new MailAddress(_smtpConfig.SenderAddress, _smtpConfig.SenderDisplayName),
             IsBodyHtml = _smtpConfig.IsBodyHtml,
-            BodyEncoding = Encoding.Default
+            BodyEncoding = Encoding.Default,
         };
+
+        if (userEmailOptions.Attachments != null)
+        {
+            foreach (var attachment in userEmailOptions.Attachments)
+            {
+                mail.Attachments.Add(attachment);
+            }
+        }
         
         foreach (var toEmail in userEmailOptions.ToEmails)
         {
             mail.To.Add(toEmail);
         }
         
-        var smtpClient = new SmtpClient
+        
+        using var smtpClient = new SmtpClient
         {
             Host = _smtpConfig.Host,
             Port = _smtpConfig.Port,

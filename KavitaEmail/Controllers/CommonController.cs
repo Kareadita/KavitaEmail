@@ -8,7 +8,7 @@ using Skeleton.Misc;
 
 namespace Skeleton.Controllers;
 
-[Microsoft.AspNetCore.Components.Route("api/")]
+[Route("api/")]
 public class CommonController : BaseApiController
 {
     private readonly ILogger<CommonController> _logger;

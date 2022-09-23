@@ -5,6 +5,7 @@ using System.Linq;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.AspNetCore.StaticFiles;
@@ -55,6 +56,11 @@ namespace Skeleton
             {
                 options.Level = CompressionLevel.Fastest;
             });
+            
+            services.Configure<FormOptions>(options =>
+            {
+                options.MemoryBufferThreshold = 26_214_400; // 25MB
+            });
 
             services.AddResponseCaching();
         }
@@ -99,6 +105,7 @@ namespace Skeleton
             });
             
             app.UseSerilogRequestLogging();
+            
 
             app.Use(async (context, next) =>
             {
