@@ -154,5 +154,5 @@ jobs:
             severity: info
             description: v${{steps.get-version.outputs.assembly-version}} - ${{ steps.findPr.outputs.title }}
             details: '${{ steps.parse-body.outputs.BODY }}'
-            text: KavitaEmail ${{steps.get-version.outputs.assembly-version}} has been released.
+            text: <@&950058626658234398> KavitaEmail ${{steps.get-version.outputs.assembly-version}} has been released.
             webhookUrl: ${{ secrets.DISCORD_DOCKER_UPDATE_URL }}
