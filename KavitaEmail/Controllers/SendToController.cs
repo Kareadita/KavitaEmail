@@ -70,7 +70,7 @@ public class SendToController : BaseApiController
         {
             if (formFile.Length <= 0) continue;
             var lastIndex = formFile.FileName.LastIndexOf(".", StringComparison.Ordinal);
-            var filename = formFile.FileName.Substring(0, lastIndex).Replace('.', '_');
+            var filename = formFile.FileName.Substring(0, lastIndex).Replace('.', '_') + Path.GetExtension(formFile.FileName);
 
             if (!Directory.Exists(_tempPath)) Directory.CreateDirectory(_tempPath);
             var tempFile = Path.Join(_tempPath, filename);
