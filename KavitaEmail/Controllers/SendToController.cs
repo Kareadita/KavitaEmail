@@ -21,7 +21,6 @@ public class SendToController : BaseApiController
     private readonly ILogger<SendToController> _logger;
     private readonly SmtpConfig _smtpConfig;
     private readonly IEmailService _emailService;
-    private const int SizeLimit = 26_214_400;
     private readonly string[] _permittedExtensions = { ".epub", ".pdf" };
     private readonly string _tempPath;
 
@@ -37,7 +36,7 @@ public class SendToController : BaseApiController
     }
 
 
-    [RequestSizeLimit(SizeLimit)]
+    [DisableRequestSizeLimit]
     [HttpPost]
     public async Task<ActionResult<bool>> UploadAndSend(IFormCollection formCollection)
     {
@@ -50,9 +49,9 @@ public class SendToController : BaseApiController
 
         if (formCollection.Files.Count == 0) return BadRequest("Nothing to send to device");
         
-        // // Validate size limit
+        // Validate size limit
         var size = formCollection.Files.Sum(f => f.Length);
-        if (size > SizeLimit) return BadRequest("Files are too large");
+        if (size > _smtpConfig.SizeLimit) return BadRequest("Files are too large");
         
         // Validate correct extension
         if (!formCollection.Files.All(f =>

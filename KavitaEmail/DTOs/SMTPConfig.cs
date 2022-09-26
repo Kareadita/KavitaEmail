@@ -16,4 +16,8 @@ public class SmtpConfig
     /// If enabled, this allows Kavita to upload files (temporarily) and send the files as attachments
     /// </summary>
     public bool AllowSendTo { get; set; }
+    /// <summary>
+    /// Limit in bytes for allowing files to be added as attachments. Defaults to 25MB
+    /// </summary>
+    public int SizeLimit { get; set; } = 26_214_400;
 }
