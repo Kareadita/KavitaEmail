@@ -21,7 +21,6 @@ public class SendToController : BaseApiController
     private readonly ILogger<SendToController> _logger;
     private readonly SmtpConfig _smtpConfig;
     private readonly IEmailService _emailService;
-    private const int SizeLimit = 26_214_400;
     private readonly string[] _permittedExtensions = { ".epub", ".pdf" };
     private readonly string _tempPath;
 
@@ -37,10 +36,13 @@ public class SendToController : BaseApiController
     }
 
 
-    [RequestSizeLimit(SizeLimit)]
+    [DisableRequestSizeLimit]
     [HttpPost]
     public async Task<ActionResult<bool>> UploadAndSend(IFormCollection formCollection)
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[send-to] Request came in from {InstallId} on version {Version}", installId, version);
         if (!_smtpConfig.AllowSendTo) return BadRequest("This API is not enabled");
         
         _logger.LogInformation("Received a Send to request for {FileCount} files", formCollection.Files.Count);
@@ -50,9 +52,9 @@ public class SendToController : BaseApiController
 
         if (formCollection.Files.Count == 0) return BadRequest("Nothing to send to device");
         
-        // // Validate size limit
+        // Validate size limit
         var size = formCollection.Files.Sum(f => f.Length);
-        if (size > SizeLimit) return BadRequest("Files are too large");
+        if (size > _smtpConfig.SizeLimit) return BadRequest("Files are too large");
         
         // Validate correct extension
         if (!formCollection.Files.All(f =>

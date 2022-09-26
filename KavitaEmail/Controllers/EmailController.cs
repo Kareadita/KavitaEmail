@@ -33,12 +33,18 @@ public class EmailController : BaseApiController
     [HttpGet("test")]
     public ActionResult<bool> Test()
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[test] Request came in from {InstallId} on version {Version}", installId, version);
         return Ok(true);
     }
 
     [HttpPost("confirm")]
     public async Task<ActionResult> SendConfirmationEmail(ConfirmationEmailDto dto)
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[email-confirm] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId))
         {
             _logger.LogError("An installID {InstallId} was not valid, request rejected for confirmation email", dto.InstallId);
@@ -51,6 +57,9 @@ public class EmailController : BaseApiController
     [HttpPost("email-migration")]
     public async Task<ActionResult> SendEmailMigrationEmail(EmailMigrationDto dto)
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[email-migration] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId)) return BadRequest("Not valid");
         await _emailService.SendEmailMigrationEmail(dto);
         return Ok();
@@ -59,6 +68,9 @@ public class EmailController : BaseApiController
     [HttpPost("email-password-reset")]
     public async Task<ActionResult> SendPasswordResetConfirmation(PasswordResetDto dto)
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[email-password-reset] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId)) return BadRequest("Not valid");
         _logger.LogInformation("Email Password Reset called");
         await _emailService.SendPasswordResetEmail(dto);
@@ -72,6 +84,9 @@ public class EmailController : BaseApiController
     [HttpGet("reachable")]
     public async Task<ActionResult<bool>> CanReachServer(string host)
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[reachable] Request came in from {InstallId} on version {Version}", installId, version);
         var apiUrl = Request.Scheme + "://" + host + Request.PathBase + "/api/";
         FlurlHttp.ConfigureClient(apiUrl, cli =>
             cli.Settings.HttpClientFactory = new UntrustedCertClientFactory());
