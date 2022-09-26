@@ -25,6 +25,9 @@ public class CommonController : BaseApiController
     [HttpGet("test")]
     public ActionResult<bool> Test()
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[test] Request came in from {InstallId} on version {Version}", installId, version);
         _logger.LogInformation("Test called and validated");
         return Ok(true);
     }
@@ -36,7 +39,10 @@ public class CommonController : BaseApiController
     [HttpGet("reachable")]
     public async Task<ActionResult<bool>> CanReachServer(string host)
     {
-        _logger.LogInformation("Can Reach Server triggered");
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[reachable] Request came in from {InstallId} on version {Version}", installId, version);
+        
         var apiUrl = Request.Scheme + "://" + host + Request.PathBase + "/api/";
         FlurlHttp.ConfigureClient(apiUrl, cli =>
             cli.Settings.HttpClientFactory = new UntrustedCertClientFactory());

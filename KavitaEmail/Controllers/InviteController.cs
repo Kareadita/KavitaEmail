@@ -29,6 +29,9 @@ public class InviteController : BaseApiController
     [HttpPost("confirm")]
     public async Task<ActionResult> SendConfirmationEmail(ConfirmationEmailDto dto)
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[email-confirm] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId))
         {
             _logger.LogError("An installID {InstallId} was not valid, request rejected for confirmation email", dto.InstallId);
@@ -41,6 +44,9 @@ public class InviteController : BaseApiController
     [HttpPost("email-migration")]
     public async Task<ActionResult> SendEmailMigrationEmail(EmailMigrationDto dto)
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[email-migration] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId))
         {
             _logger.LogInformation("InstallId {InstallId} could not be validated against Stat service. Send Email for Migration rejected", dto.EmailAddress);
@@ -53,6 +59,9 @@ public class InviteController : BaseApiController
     [HttpPost("email-password-reset")]
     public async Task<ActionResult> SendPasswordResetConfirmation(PasswordResetDto dto)
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[email-password-reset] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId))
         {
             _logger.LogInformation("InstallId {InstallId} could not be validated against Stat service. Send Password Reset confirmation rejected", dto.EmailAddress);

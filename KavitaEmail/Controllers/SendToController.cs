@@ -40,6 +40,9 @@ public class SendToController : BaseApiController
     [HttpPost]
     public async Task<ActionResult<bool>> UploadAndSend(IFormCollection formCollection)
     {
+        Request.Headers.TryGetValue("x-kavita-installId", out var installId);
+        Request.Headers.TryGetValue("x-kavita-version", out var version);
+        _logger.LogInformation("[send-to] Request came in from {InstallId} on version {Version}", installId, version);
         if (!_smtpConfig.AllowSendTo) return BadRequest("This API is not enabled");
         
         _logger.LogInformation("Received a Send to request for {FileCount} files", formCollection.Files.Count);
