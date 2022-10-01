@@ -490,6 +490,7 @@ appsettings.Development.json
 _temp/
 _output/
 wwwroot/
+config/temp/*.*
 config/*.db
 config/*.db-shm
 config/*.db-wal

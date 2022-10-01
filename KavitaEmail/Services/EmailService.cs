@@ -48,6 +48,27 @@ public class EmailService : IEmailService
 
         await SendEmail(emailOptions);
     }
+    
+    public async Task SendEmailForEmailChange(ConfirmationEmailDto dto)
+    {
+        var placeholders = new List<KeyValuePair<string, string>>
+        {
+            new ("{{InvitingUser}}", dto.InvitingUser),
+            new ("{{Link}}", dto.ServerConfirmationLink)
+        };
+
+        var emailOptions = new EmailOptionsDto()
+        {
+            Subject = UpdatePlaceHolders("Your email has been changed on {{InvitingUser}}'s Server", placeholders),
+            Body = UpdatePlaceHolders(GetEmailBody("EmailChange"), placeholders),
+            ToEmails = new List<string>()
+            {
+                dto.EmailAddress
+            }
+        };
+
+        await SendEmail(emailOptions);
+    }
 
     public async Task SendEmailMigrationEmail(EmailMigrationDto dto)
     {
