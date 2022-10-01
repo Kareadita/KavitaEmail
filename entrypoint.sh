@@ -7,6 +7,7 @@ sed -i "s/\"UserName\": \"\"/\"UserName\": \"$SMTP_USER\"/" /app/config/appsetti
 sed -i "s/\"Password\": \"\"/\"Password\": \"$SMTP_PASS\"/" /app/config/appsettings.json
 sed -i "s/\"SenderAddress\": \"\"/\"SenderAddress\": \"$SEND_ADDR\"/" /app/config/appsettings.json
 sed -i "s/\"SenderDisplayName\": \"\"/\"SenderDisplayName\": \"$DISP_NAME\"/" /app/config/appsettings.json
+sed -i "s/\"AllowSendTo\": \"\"/\"AllowSendTo\": \"$ALLOW_SENDTO\"/" /app/config/appsettings.json
 
 chmod +x KavitaEmail
 

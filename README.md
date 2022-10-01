@@ -7,7 +7,7 @@ their own instance of this microService.
 
 ### With Docker Run
 
-`docker run --name kavita-email -p 5003:5003 -e SMTP_HOST="" -e SMTP_PORT="" -e SMTP_USER="" -e SMTP_PASS="" -e SEND_ADDR="" -e DISP_NAME="" -d kizaing/kavitaemail:latest`
+`docker run --name kavita-email -p 5003:5003 -e SMTP_HOST="" -e SMTP_PORT="" -e SMTP_USER="" -e SMTP_PASS="" -e SEND_ADDR="" -e DISP_NAME="" -e ALLOW_SENDTO="true" -d kizaing/kavitaemail:latest`
 
 ### With Docker Compose
 
@@ -24,6 +24,7 @@ services:
            - SMTP_PASS=<smtp password>
            - SEND_ADDR=<address you are sending emails from>
            - DISP_NAME=<display name to use>
+           - ALLOW_SENDTO=<true/false if you want the service to email files for Kavita>
         ports:
            - "5003:5003"
         restart: unless-stopped
