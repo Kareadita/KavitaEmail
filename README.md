@@ -25,6 +25,7 @@ services:
            - SEND_ADDR=<address you are sending emails from>
            - DISP_NAME=<display name to use>
            - ALLOW_SENDTO=<true/false if you want the service to email files for Kavita>
+           - SIZE_LIMIT=<size in bytes that your SMTP provider can hanlde for a sinle email>
         ports:
            - "5003:5003"
         restart: unless-stopped
