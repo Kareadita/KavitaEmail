@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Reflection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.StaticFiles;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Skeleton.Extensions;
@@ -65,7 +67,7 @@ namespace Skeleton
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime, IServiceProvider serviceProvider)
         {
             if (env.IsDevelopment())
             {
@@ -123,6 +125,22 @@ namespace Skeleton
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+            
+            applicationLifetime.ApplicationStarted.Register(() =>
+            {
+
+                var version = Assembly.GetExecutingAssembly().GetName().Version;
+                try
+                {
+                    var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
+                    logger.LogInformation("Kavita - v{Version}", version);
+                }
+                catch (Exception)
+                {
+                    /* Swallow Exception */
+                }
+                Console.WriteLine($"Kavita - v{version}");
             });
             
             applicationLifetime.ApplicationStarted.Register(() =>
