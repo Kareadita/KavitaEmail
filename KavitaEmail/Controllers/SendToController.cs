@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,7 +22,7 @@ public class SendToController : BaseApiController
     private readonly ILogger<SendToController> _logger;
     private readonly SmtpConfig _smtpConfig;
     private readonly IEmailService _emailService;
-    private readonly string[] _permittedExtensions = { ".epub", ".pdf" };
+    private readonly string[] _permittedExtensions = { ".epub", ".pdf", ".cbz", ".zip", ".cbr", ".rar", ".cbt", ".tar.gz", ".cb7", ".7zip", ".7z" };
     private readonly string _tempPath;
 
     public SendToController(ILogger<SendToController> logger, IOptions<SmtpConfig> smtpConfig, IEmailService emailService)
