@@ -50,6 +50,9 @@ Package()
 
 	  echo "Copying appsettings.json"
     cp ./config/appsettings.json $lOutputFolder/config/appsettings.json
+    
+    echo "Copying templates"
+    cp -a ./config/templates/ $lOutputFolder/config/templates/
 
     echo "Creating tar"
     cd ../$outputFolder/"$runtime"/

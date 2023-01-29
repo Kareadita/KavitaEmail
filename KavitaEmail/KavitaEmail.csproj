@@ -29,7 +29,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="config\temp" />
+        <Folder Include="config\templates" />
+        <Folder Include="config\appsettings.json" />
     </ItemGroup>
 
 </Project>
