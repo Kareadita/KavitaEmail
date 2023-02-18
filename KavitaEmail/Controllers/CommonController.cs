@@ -28,7 +28,6 @@ public class CommonController : BaseApiController
         Request.Headers.TryGetValue("x-kavita-installId", out var installId);
         Request.Headers.TryGetValue("x-kavita-version", out var version);
         _logger.LogInformation("[test] Request came in from {InstallId} on version {Version}", installId, version);
-        _logger.LogInformation("Test called and validated");
         return Ok(true);
     }
     

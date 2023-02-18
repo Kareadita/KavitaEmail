@@ -26,12 +26,17 @@ public class InviteController : BaseApiController
         _validationService = validationService;
     }
 
+    /// <summary>
+    /// To invite a user to Kavita
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPost("confirm")]
     public async Task<ActionResult> SendConfirmationEmail(ConfirmationEmailDto dto)
     {
         Request.Headers.TryGetValue("x-kavita-installId", out var installId);
         Request.Headers.TryGetValue("x-kavita-version", out var version);
-        _logger.LogInformation("[email-confirm] Request came in from {InstallId} on version {Version}", installId, version);
+        _logger.LogInformation("[invite user] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId))
         {
             _logger.LogError("An installID {InstallId} was not valid, request rejected for confirmation email", dto.InstallId);
@@ -41,12 +46,17 @@ public class InviteController : BaseApiController
         return Ok();
     }
     
+    /// <summary>
+    /// This is used to resend an invite link to the Kavita instance
+    /// </summary>
+    /// <param name="dto"></param>
+    /// <returns></returns>
     [HttpPost("email-migration")]
     public async Task<ActionResult> SendEmailMigrationEmail(EmailMigrationDto dto)
     {
         Request.Headers.TryGetValue("x-kavita-installId", out var installId);
         Request.Headers.TryGetValue("x-kavita-version", out var version);
-        _logger.LogInformation("[email-migration] Request came in from {InstallId} on version {Version}", installId, version);
+        _logger.LogInformation("[resend-invite] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId))
         {
             _logger.LogInformation("InstallId {InstallId} could not be validated against Stat service. Send Email for Migration rejected", dto.EmailAddress);
@@ -61,7 +71,7 @@ public class InviteController : BaseApiController
     {
         Request.Headers.TryGetValue("x-kavita-installId", out var installId);
         Request.Headers.TryGetValue("x-kavita-version", out var version);
-        _logger.LogInformation("[email-password-reset] Request came in from {InstallId} on version {Version}", installId, version);
+        _logger.LogInformation("[password-reset] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId))
         {
             _logger.LogInformation("InstallId {InstallId} could not be validated against Stat service. Send Password Reset confirmation rejected", dto.EmailAddress);
