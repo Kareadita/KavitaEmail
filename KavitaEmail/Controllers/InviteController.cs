@@ -74,10 +74,10 @@ public class InviteController : BaseApiController
         _logger.LogInformation("[password-reset] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId))
         {
-            _logger.LogInformation("InstallId {InstallId} could not be validated against Stat service. Send Password Reset confirmation rejected", dto.EmailAddress);
+            _logger.LogInformation("[password-reset] InstallId {InstallId} could not be validated against Stat service. Send Password Reset confirmation rejected", dto.EmailAddress);
             return BadRequest("Not valid");
         }
-        _logger.LogInformation("Email Password Reset called");
+        _logger.LogInformation("[password-reset] Email Password Reset called for {InstallId}", installId);
         await _emailService.SendPasswordResetEmail(dto);
         return Ok();
     }
