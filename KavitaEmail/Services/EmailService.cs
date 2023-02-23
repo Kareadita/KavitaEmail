@@ -162,6 +162,7 @@ public class EmailService : IEmailService
             Credentials = new NetworkCredential(_smtpConfig.UserName, _smtpConfig.Password),
             Timeout = 20000
         };
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
         await smtpClient.SendMailAsync(mail);
     }

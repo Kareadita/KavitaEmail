@@ -30,8 +30,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="config\templates" />
-        <Folder Include="config\appsettings.json" />
+        <Folder Include="config" />
     </ItemGroup>
 
 </Project>

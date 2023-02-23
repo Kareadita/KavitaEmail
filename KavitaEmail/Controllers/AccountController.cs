@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Skeleton.DTOs;
@@ -30,7 +31,16 @@ public class AccountController : BaseApiController
             _logger.LogError("An installID {InstallId} was not valid, request rejected for confirmation email", dto.InstallId);
             return BadRequest("Not valid");
         }
-        await _emailService.SendEmailForEmailConfirmation(dto);
-        return Ok();
+
+        try
+        {
+            await _emailService.SendEmailForEmailConfirmation(dto);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "There was an exception when sending an email for email change");
+        }
+        return BadRequest();
     }
 }

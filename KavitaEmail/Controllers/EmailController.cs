@@ -72,7 +72,7 @@ public class EmailController : BaseApiController
         Request.Headers.TryGetValue("x-kavita-version", out var version);
         _logger.LogInformation("[email-password-reset] Request came in from {InstallId} on version {Version}", installId, version);
         if (!await _validationService.ValidateInstall(dto.InstallId)) return BadRequest("Not valid");
-        _logger.LogInformation("Email Password Reset called");
+        _logger.LogInformation("[email-password-reset] Email Password Reset called for {InstallId}", installId);
         await _emailService.SendPasswordResetEmail(dto);
         return Ok();
     }

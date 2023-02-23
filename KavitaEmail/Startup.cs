@@ -58,9 +58,12 @@ namespace Skeleton
                 options.Level = CompressionLevel.Fastest;
             });
             
+            
             services.Configure<FormOptions>(options =>
             {
-                options.MemoryBufferThreshold = 26_214_400; // 25MB
+                var sizeLimit = _config.GetSection("SMTP:SizeLimit").Get<int>();
+                if (sizeLimit == 0) sizeLimit = 26_214_400;
+                options.MemoryBufferThreshold = sizeLimit; // 25MB
             });
 
             services.AddResponseCaching();
@@ -80,8 +83,6 @@ namespace Skeleton
             {
                 ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
             });
-
-            //app.UseHttpsRedirection();
 
             app.UseRouting();
             
@@ -107,20 +108,6 @@ namespace Skeleton
             
             app.UseSerilogRequestLogging();
             
-
-            app.Use(async (context, next) =>
-            {
-                context.Response.GetTypedHeaders().CacheControl =
-                    new Microsoft.Net.Http.Headers.CacheControlHeaderValue()
-                    {
-                        Public = false,
-                        MaxAge = TimeSpan.FromSeconds(10),
-                    };
-                context.Response.Headers[Microsoft.Net.Http.Headers.HeaderNames.Vary] =
-                    new[] { "Accept-Encoding" };
-
-                await next();
-            });
 
             app.UseEndpoints(endpoints =>
             {
