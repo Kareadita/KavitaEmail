@@ -6,6 +6,7 @@
         <RootNamespace>Skeleton</RootNamespace>
         <AssemblyVersion>0.1.13.0</AssemblyVersion>
         <LangVersion>11</LangVersion>
+        <UserSecretsId>6c7fdbb8-0db9-4c2c-843e-fa70bdd25264</UserSecretsId>
     </PropertyGroup>
 
     <ItemGroup>
@@ -30,8 +31,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Folder Include="config\templates" />
-        <Folder Include="config\appsettings.json" />
+        <Folder Include="config" />
     </ItemGroup>
 
 </Project>
