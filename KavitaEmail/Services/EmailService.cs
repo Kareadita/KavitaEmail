@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Skeleton.DTOs;
 
@@ -16,24 +17,27 @@ public interface IEmailService
     Task SendEmailMigrationEmail(EmailMigrationDto dto);
     Task SendPasswordResetEmail(PasswordResetDto dto);
     Task SendToDevice(string emailAddress, IList<Attachment> attachments);
+    Task SendTestEmail(string adminEmail);
 }
 
 public class EmailService : IEmailService
 {
+    private readonly ILogger<EmailService> _logger;
     private const string TemplatePath = @"{0}.html";
     private readonly SmtpConfig _smtpConfig;
 
-    public EmailService(IOptions<SmtpConfig> smtpConfig)
+    public EmailService(IOptions<SmtpConfig> smtpConfig, ILogger<EmailService> logger)
     {
+        _logger = logger;
         _smtpConfig = smtpConfig.Value;
     }
     
-    public async Task SendEmailForEmailConfirmation(ConfirmationEmailDto dto)
+    public async Task SendEmailForEmailConfirmation(ConfirmationEmailDto userEmailOptions)
     {
         var placeholders = new List<KeyValuePair<string, string>>
         {
-            new ("{{InvitingUser}}", dto.InvitingUser),
-            new ("{{Link}}", dto.ServerConfirmationLink)
+            new ("{{InvitingUser}}", userEmailOptions.InvitingUser),
+            new ("{{Link}}", userEmailOptions.ServerConfirmationLink)
         };
 
         var emailOptions = new EmailOptionsDto()
@@ -42,7 +46,7 @@ public class EmailService : IEmailService
             Body = UpdatePlaceHolders(GetEmailBody("EmailConfirm"), placeholders),
             ToEmails = new List<string>()
             {
-                dto.EmailAddress
+                userEmailOptions.EmailAddress
             }
         };
 
@@ -127,6 +131,21 @@ public class EmailService : IEmailService
         await SendEmail(emailOptions);
     }
 
+    public async Task SendTestEmail(string adminEmail)
+    {
+        var emailOptions = new EmailOptionsDto()
+        {
+            Subject = "KavitaEmail Test",
+            Body = GetEmailBody("EmailTest"),
+            ToEmails = new List<string>()
+            {
+                adminEmail
+            }
+        };
+
+        await SendEmail(emailOptions);
+    }
+
     private async Task SendEmail(EmailOptionsDto userEmailOptions)
     {
         using var mail = new MailMessage
@@ -164,7 +183,15 @@ public class EmailService : IEmailService
         };
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-        await smtpClient.SendMailAsync(mail);
+        try
+        {
+            await smtpClient.SendMailAsync(mail);
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "There was an issue sending the email");
+            throw;
+        }
     }
 
     private static string GetEmailBody(string templateName)
