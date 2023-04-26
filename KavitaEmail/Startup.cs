@@ -42,7 +42,6 @@ namespace Skeleton
                 options.ForwardedHeaders = ForwardedHeaders.All;
             });
             services.AddCors();
-            services.AddIdentityServices(_config);
 
             services.AddResponseCompression(options =>
             {
@@ -72,28 +71,14 @@ namespace Skeleton
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime applicationLifetime, IServiceProvider serviceProvider)
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-            }
-            
             app.UseResponseCompression();
 
             app.UseForwardedHeaders(new ForwardedHeadersOptions
             {
-                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedHost
+                ForwardedHeaders = ForwardedHeaders.All
             });
 
             app.UseRouting();
-            
-            if (env.IsDevelopment())
-            {
-                app.UseCors(policy => policy
-                    .AllowAnyHeader()
-                    .AllowAnyMethod()
-                    .WithOrigins("http://localhost:4200")
-                    .WithExposedHeaders("Content-Disposition", "Pagination"));
-            }
             
             app.UseResponseCaching();
 
@@ -121,13 +106,13 @@ namespace Skeleton
                 try
                 {
                     var logger = serviceProvider.GetRequiredService<ILogger<Startup>>();
-                    logger.LogInformation("Kavita - v{Version}", version);
+                    logger.LogInformation("KavitaEmail - v{Version}", version);
                 }
                 catch (Exception)
                 {
                     /* Swallow Exception */
                 }
-                Console.WriteLine($"Kavita - v{version}");
+                Console.WriteLine($"KavitaEmail - v{version}");
             });
             
             applicationLifetime.ApplicationStarted.Register(() =>

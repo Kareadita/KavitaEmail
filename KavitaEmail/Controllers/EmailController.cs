@@ -17,13 +17,11 @@ public class EmailController : BaseApiController
 {
     private readonly ILogger<EmailController> _logger;
     private readonly IEmailService _emailService;
-    private readonly IValidationService _validationService;
 
-    public EmailController(ILogger<EmailController> logger, IEmailService emailService, IValidationService validationService)
+    public EmailController(ILogger<EmailController> logger, IEmailService emailService)
     {
         _logger = logger;
         _emailService = emailService;
-        _validationService = validationService;
     }
     
     /// <summary>
@@ -45,11 +43,6 @@ public class EmailController : BaseApiController
         Request.Headers.TryGetValue("x-kavita-installId", out var installId);
         Request.Headers.TryGetValue("x-kavita-version", out var version);
         _logger.LogInformation("[email-confirm] Request came in from {InstallId} on version {Version}", installId, version);
-        if (!await _validationService.ValidateInstall(dto.InstallId))
-        {
-            _logger.LogError("An installID {InstallId} was not valid, request rejected for confirmation email", dto.InstallId);
-            return BadRequest("Not valid");
-        }
         await _emailService.SendEmailForEmailConfirmation(dto);
         return Ok();
     }
@@ -60,7 +53,6 @@ public class EmailController : BaseApiController
         Request.Headers.TryGetValue("x-kavita-installId", out var installId);
         Request.Headers.TryGetValue("x-kavita-version", out var version);
         _logger.LogInformation("[email-migration] Request came in from {InstallId} on version {Version}", installId, version);
-        if (!await _validationService.ValidateInstall(dto.InstallId)) return BadRequest("Not valid");
         await _emailService.SendEmailMigrationEmail(dto);
         return Ok();
     }
@@ -71,8 +63,6 @@ public class EmailController : BaseApiController
         Request.Headers.TryGetValue("x-kavita-installId", out var installId);
         Request.Headers.TryGetValue("x-kavita-version", out var version);
         _logger.LogInformation("[email-password-reset] Request came in from {InstallId} on version {Version}", installId, version);
-        if (!await _validationService.ValidateInstall(dto.InstallId)) return BadRequest("Not valid");
-        _logger.LogInformation("[email-password-reset] Email Password Reset called for {InstallId}", installId);
         await _emailService.SendPasswordResetEmail(dto);
         return Ok();
     }
