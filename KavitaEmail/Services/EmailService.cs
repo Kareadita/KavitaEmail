@@ -152,7 +152,7 @@ public class EmailService : IEmailService
         {
             Subject = userEmailOptions.Subject,
         };
-        email.From.Add(new MailboxAddress(_smtpConfig.SenderAddress, _smtpConfig.SenderDisplayName));
+        email.From.Add(new MailboxAddress(_smtpConfig.SenderDisplayName, _smtpConfig.SenderAddress));
 
 
         var body = new BodyBuilder
