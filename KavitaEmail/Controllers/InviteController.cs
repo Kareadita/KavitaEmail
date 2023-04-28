@@ -1,11 +1,7 @@
-﻿using System;
-using System.Threading.Tasks;
-using Flurl.Http;
-using Microsoft.AspNetCore.Http;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Skeleton.DTOs;
-using Skeleton.Misc;
 using Skeleton.Services;
 
 namespace Skeleton.Controllers;
