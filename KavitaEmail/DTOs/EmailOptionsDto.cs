@@ -9,5 +9,8 @@ public class EmailOptionsDto
     public string Subject { get; set; }
     public string Body { get; set; }
     public IList<KeyValuePair<string, string>> PlaceHolders { get; set; }
-    public IList<Attachment> Attachments { get; set; }
+    /// <summary>
+    /// Filenames to attach
+    /// </summary>
+    public IList<string> Attachments { get; set; }
 }
