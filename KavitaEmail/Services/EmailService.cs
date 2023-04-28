@@ -157,7 +157,7 @@ public class EmailService : IEmailService
 
         var body = new BodyBuilder
         {
-            TextBody = userEmailOptions.Body
+            HtmlBody = userEmailOptions.Body
         };
 
         if (userEmailOptions.Attachments != null)
