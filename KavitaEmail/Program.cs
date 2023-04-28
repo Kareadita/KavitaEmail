@@ -3,13 +3,10 @@ using System.IO;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 using Serilog.Events;
-using Skeleton.Data;
 
 namespace Skeleton
 {
@@ -33,13 +30,6 @@ namespace Skeleton
                 Directory.CreateDirectory("./config/logs/");
                 
                 var host = CreateHostBuilder(args).Build();
-
-                using var scope = host.Services.CreateScope();
-                var services = scope.ServiceProvider;
-                var context = services.GetRequiredService<DataContext>();
-
-                // Apply all migrations on startup
-                await context.Database.MigrateAsync();
 
                 await host.RunAsync();
             }

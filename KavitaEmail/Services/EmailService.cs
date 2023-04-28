@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Mail;
-using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using MimeKit;
 using Skeleton.DTOs;
 
 namespace Skeleton.Services;
@@ -16,7 +15,7 @@ public interface IEmailService
     Task SendEmailForEmailConfirmation(ConfirmationEmailDto userEmailOptions);
     Task SendEmailMigrationEmail(EmailMigrationDto dto);
     Task SendPasswordResetEmail(PasswordResetDto dto);
-    Task SendToDevice(string emailAddress, IList<Attachment> attachments);
+    Task SendToDevice(string emailAddress, IList<string> attachments);
     Task SendTestEmail(string adminEmail);
 }
 
@@ -55,6 +54,7 @@ public class EmailService : IEmailService
     
     public async Task SendEmailForEmailChange(ConfirmationEmailDto dto)
     {
+        
         var placeholders = new List<KeyValuePair<string, string>>
         {
             new ("{{InvitingUser}}", dto.InvitingUser),
@@ -115,7 +115,7 @@ public class EmailService : IEmailService
         await SendEmail(emailOptions);
     }
 
-    public async Task SendToDevice(string emailAddress, IList<Attachment> attachments)
+    public async Task SendToDevice(string emailAddress, IList<string> attachments)
     {
         
         var emailOptions = new EmailOptionsDto()
@@ -148,49 +148,53 @@ public class EmailService : IEmailService
 
     private async Task SendEmail(EmailOptionsDto userEmailOptions)
     {
-        using var mail = new MailMessage
+        var email = new MimeMessage()
         {
             Subject = userEmailOptions.Subject,
-            Body = userEmailOptions.Body,
-            From = new MailAddress(_smtpConfig.SenderAddress, _smtpConfig.SenderDisplayName),
-            IsBodyHtml = _smtpConfig.IsBodyHtml,
-            BodyEncoding = Encoding.Default,
+        };
+        email.From.Add(new MailboxAddress(_smtpConfig.SenderDisplayName, _smtpConfig.SenderAddress));
+
+
+        var body = new BodyBuilder
+        {
+            HtmlBody = userEmailOptions.Body
         };
 
         if (userEmailOptions.Attachments != null)
         {
             foreach (var attachment in userEmailOptions.Attachments)
             {
-                mail.Attachments.Add(attachment);
+                await body.Attachments.AddAsync(attachment);
             }
         }
+
+        email.Body = body.ToMessageBody();
         
         foreach (var toEmail in userEmailOptions.ToEmails)
         {
-            mail.To.Add(toEmail);
+            email.To.Add(new MailboxAddress(toEmail, toEmail));
         }
-        
-        
-        using var smtpClient = new SmtpClient
+
+        using var smtpClient = new MailKit.Net.Smtp.SmtpClient
         {
-            Host = _smtpConfig.Host,
-            Port = _smtpConfig.Port,
-            EnableSsl = _smtpConfig.EnableSsl,
-            DeliveryMethod = SmtpDeliveryMethod.Network,
-            UseDefaultCredentials = _smtpConfig.UseDefaultCredentials,
-            Credentials = new NetworkCredential(_smtpConfig.UserName, _smtpConfig.Password),
             Timeout = 20000
         };
+        await smtpClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port);
+        await smtpClient.AuthenticateAsync(_smtpConfig.SenderAddress, _smtpConfig.Password);
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
         try
         {
-            await smtpClient.SendMailAsync(mail);
+            await smtpClient.SendAsync(email);
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "There was an issue sending the email");
             throw;
+        }
+        finally
+        {
+            await smtpClient.DisconnectAsync(true);
         }
     }
 

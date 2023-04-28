@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net.Mail;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -68,7 +66,6 @@ public class SendToController : BaseApiController
         }
 
         var tempFiles = new List<string>();
-        var attachments = new List<Attachment>();
         foreach (var formFile in formCollection.Files)
         {
             if (formFile.Length <= 0) continue;
@@ -81,12 +78,10 @@ public class SendToController : BaseApiController
             await using var stream = System.IO.File.Create(tempFile);
             await formFile.CopyToAsync(stream);
             stream.Close();
-            attachments.Add(new Attachment(tempFile));
-            
             tempFiles.Add(tempFile);
         }
 
-        await _emailService.SendToDevice(formCollection["email"], attachments);
+        await _emailService.SendToDevice(formCollection["email"], tempFiles);
 
         foreach (var file in tempFiles)
         {
