@@ -24,4 +24,4 @@ services:
         restart: unless-stopped
 ```
 
-Simply fill in the variables with your SMTP settings and then in Kavita put in the address of this email service. If running with Kavita in a docker-compose stack you can use the service name you defined for this email relay. 
+After the first run, shut down the container and edit the appsettings.json file inside the config folder. When the settings are to your liking, restart and it should apply your SMTP settings.
