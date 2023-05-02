@@ -14,6 +14,7 @@ COPY --from=copytask /KavitaEmail /app
 
 COPY entrypoint.sh /entrypoint.sh
 COPY KavitaEmail/config/templates /app/config/templates
+COPY KavitaEmail/config/appsettings.json /tmp/appsettings.json
 
 RUN apt-get update && \
     apt-get install -y curl nano rsync && \

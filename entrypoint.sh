@@ -1,14 +1,16 @@
 #! /bin/bash
 
-#Applies environment variables
-sed -i "s/\"Host\": \"\"/\"Host\": \"$SMTP_HOST\"/" /app/config/appsettings.json
-sed -i "s/\"Port\": \"\"/\"Port\": \"$SMTP_PORT\"/" /app/config/appsettings.json
-sed -i "s/\"UserName\": \"\"/\"UserName\": \"$SMTP_USER\"/" /app/config/appsettings.json
-sed -i "s/\"Password\": \"\"/\"Password\": \"$SMTP_PASS\"/" /app/config/appsettings.json
-sed -i "s/\"SenderAddress\": \"\"/\"SenderAddress\": \"$SEND_ADDR\"/" /app/config/appsettings.json
-sed -i "s/\"SenderDisplayName\": \"\"/\"SenderDisplayName\": \"$DISP_NAME\"/" /app/config/appsettings.json
-sed -i "s/\"AllowSendTo\": \"\"/\"AllowSendTo\": \"$ALLOW_SENDTO\"/" /app/config/appsettings.json
-sed -i "s/\"SizeLimit\": \"\"/\"SizeLimit\": \"$SIZE_LIMIT\"/" /app/config/appsettings.json
+#Checks if the config file exists, and creates it if it does not
+if [ ! -f "/app/config/appsettings.json" ]; then
+    echo "Kavita configuration file does not exist, copying from temp..."
+    cp /tmp/appsettings.json /app/config/appsettings.json
+    if [ -f "/app/config/appsettings.json" ]; then
+        echo "Copy completed successfully, starting app..."
+    else
+        echo "Copy failed, check folder permissions. Exiting..."
+        exit
+    fi
+fi
 
 chmod +x KavitaEmail
 
