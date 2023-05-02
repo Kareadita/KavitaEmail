@@ -125,6 +125,7 @@ public class EmailService : IEmailService
             {
                 emailAddress
             },
+            Body = GetEmailBody("SendToDevice"),
             Attachments = attachments
         };
 
@@ -179,6 +180,7 @@ public class EmailService : IEmailService
         {
             Timeout = 20000
         };
+      
         await smtpClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port);
         await smtpClient.AuthenticateAsync(_smtpConfig.SenderAddress, _smtpConfig.Password);
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
