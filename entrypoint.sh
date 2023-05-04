@@ -13,8 +13,6 @@ if [ ! -f "/app/config/appsettings.json" ]; then
 fi
 
 #Checks if the templates folder exists, and creates it if it does not
-#Also will sync new files if they are added
-DIFF=$(diff /tmp/config/templates /app/config/templates)
 if [ ! -d "/app/config/templates" ]; then
     echo "Templates folder does not exist, copying from temp..."
     cp -r /tmp/config/templates /app/config/templates
@@ -24,7 +22,11 @@ if [ ! -d "/app/config/templates" ]; then
         echo "Copy failed, check folder permissions. Exiting..."
         exit
     fi
-elif [ "$DIFF" != "" ]; then
+fi
+
+#Checking if new files have been added
+DIFF=$(diff /tmp/config/templates /app/config/templates)
+if [ "$DIFF" != "" ]; then
     echo "Template folder out of sync, copying new files..."
     rsync -azP /tmp/config/templates/ /app/config/templates
     #Doing a second check to make sure it copied properly
