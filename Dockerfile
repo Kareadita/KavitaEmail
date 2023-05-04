@@ -13,8 +13,7 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 COPY --from=copytask /KavitaEmail /app
 
 COPY entrypoint.sh /entrypoint.sh
-COPY KavitaEmail/config/templates /tmp/templates
-COPY KavitaEmail/config/appsettings.json /tmp/appsettings.json
+COPY KavitaEmail/config /tmp/config
 
 RUN apt-get update && \
     apt-get install -y curl nano rsync && \
