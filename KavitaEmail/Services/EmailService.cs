@@ -182,7 +182,7 @@ public class EmailService : IEmailService
         };
       
         await smtpClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port);
-        await smtpClient.AuthenticateAsync(_smtpConfig.SenderAddress, _smtpConfig.Password);
+        await smtpClient.AuthenticateAsync(_smtpConfig.UserName, _smtpConfig.Password);
         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
         try
