@@ -29,6 +29,7 @@ public class EmailController : BaseApiController
     /// </summary>
     /// <returns></returns>
     [HttpGet("test")]
+    [Obsolete("Use api/test instead")]
     public ActionResult<bool> Test()
     {
         Request.Headers.TryGetValue("x-kavita-installId", out var installId);
