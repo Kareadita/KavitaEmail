@@ -27,7 +27,7 @@ public class AccountController : BaseApiController
 
         try
         {
-            await _emailService.SendEmailForEmailConfirmation(dto);
+            await _emailService.SendEmailForEmailChange(dto);
         }
         catch (Exception ex)
         {

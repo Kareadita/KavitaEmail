@@ -13,6 +13,7 @@ namespace Skeleton.Services;
 public interface IEmailService
 {
     Task SendEmailForEmailConfirmation(ConfirmationEmailDto userEmailOptions);
+    Task SendEmailForEmailChange(ConfirmationEmailDto userEmailOptions);
     Task SendEmailMigrationEmail(EmailMigrationDto dto);
     Task SendPasswordResetEmail(PasswordResetDto dto);
     Task SendToDevice(string emailAddress, IList<string> attachments);
@@ -52,13 +53,14 @@ public class EmailService : IEmailService
         await SendEmail(emailOptions);
     }
     
-    public async Task SendEmailForEmailChange(ConfirmationEmailDto dto)
+    
+    public async Task SendEmailForEmailChange(ConfirmationEmailDto userEmailOptions)
     {
         
         var placeholders = new List<KeyValuePair<string, string>>
         {
-            new ("{{InvitingUser}}", dto.InvitingUser),
-            new ("{{Link}}", dto.ServerConfirmationLink)
+            new ("{{InvitingUser}}", userEmailOptions.InvitingUser),
+            new ("{{Link}}", userEmailOptions.ServerConfirmationLink)
         };
 
         var emailOptions = new EmailOptionsDto()
@@ -67,7 +69,7 @@ public class EmailService : IEmailService
             Body = UpdatePlaceHolders(GetEmailBody("EmailChange"), placeholders),
             ToEmails = new List<string>()
             {
-                dto.EmailAddress
+                userEmailOptions.EmailAddress
             }
         };
 
