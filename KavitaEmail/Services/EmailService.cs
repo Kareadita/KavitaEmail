@@ -54,13 +54,13 @@ public class EmailService : IEmailService
     }
     
     
-    public async Task SendEmailForEmailChange(ConfirmationEmailDto dto)
+    public async Task SendEmailForEmailChange(ConfirmationEmailDto userEmailOptions)
     {
         
         var placeholders = new List<KeyValuePair<string, string>>
         {
-            new ("{{InvitingUser}}", dto.InvitingUser),
-            new ("{{Link}}", dto.ServerConfirmationLink)
+            new ("{{InvitingUser}}", userEmailOptions.InvitingUser),
+            new ("{{Link}}", userEmailOptions.ServerConfirmationLink)
         };
 
         var emailOptions = new EmailOptionsDto()
@@ -69,7 +69,7 @@ public class EmailService : IEmailService
             Body = UpdatePlaceHolders(GetEmailBody("EmailChange"), placeholders),
             ToEmails = new List<string>()
             {
-                dto.EmailAddress
+                userEmailOptions.EmailAddress
             }
         };
 
