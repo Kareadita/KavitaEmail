@@ -13,6 +13,7 @@ namespace Skeleton.Services;
 public interface IEmailService
 {
     Task SendEmailForEmailConfirmation(ConfirmationEmailDto userEmailOptions);
+    Task SendEmailForEmailChange(ConfirmationEmailDto userEmailOptions);
     Task SendEmailMigrationEmail(EmailMigrationDto dto);
     Task SendPasswordResetEmail(PasswordResetDto dto);
     Task SendToDevice(string emailAddress, IList<string> attachments);
@@ -51,6 +52,7 @@ public class EmailService : IEmailService
 
         await SendEmail(emailOptions);
     }
+    
     
     public async Task SendEmailForEmailChange(ConfirmationEmailDto dto)
     {
