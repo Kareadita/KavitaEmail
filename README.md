@@ -7,7 +7,7 @@ their own instance of this microService.
 
 ### With Docker Run
 
-`docker run --name kavita-email -p 5003:5003 -v ${PWD}/config:/app/config -d kizaing/kavitaemail:latest`
+`docker run --name kavita-email -p 5003:5003 -v ${PWD}/config:/app/config -d jvmilazz0/kavitaemail:latest`
 
 ### With Docker Compose
 
@@ -15,7 +15,7 @@ their own instance of this microService.
 version: '3'
 services:
      email:
-        image: kizaing/kavitaemail:latest
+        image: jvmilazz0/kavitaemail:latest
         container_name: kavita-email
         volumes:
            - ./config:/app/config
