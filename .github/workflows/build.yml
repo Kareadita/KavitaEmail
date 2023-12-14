@@ -40,7 +40,7 @@ jobs:
           fetch-depth: 0
 
       - name: Setup .NET Core
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
             include-prerelease: True
             dotnet-version: '7.0'
@@ -52,12 +52,13 @@ jobs:
         run: dotnet build --configuration Release --no-restore
 
       - name: Bump versions
-        uses: ThomasEg/dotnet-bump-version@patch-1
+        uses: majora2007/dotnet-bump-version@v0.0.10
         with:
-          version_files: KavitaEmail/KavitaEmail.csproj
+          version_files: Kavita.Common/Kavita.Common.csproj
           github_token: ${{ secrets.REPO_GHA_PAT }}
+          version_mask: "0.0.0.1"
 
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v3
         with:
           name: csproj
           path: KavitaEmail/KavitaEmail.csproj
@@ -95,7 +96,7 @@ jobs:
           echo "::set-output name=BODY::$body"
 
       - name: Check Out Repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: main
 
@@ -117,10 +118,10 @@ jobs:
         id: parse-version
 
       - name: Compile dotnet app
-        uses: actions/setup-dotnet@v1
+        uses: actions/setup-dotnet@v3
         with:
-          include-prerelease: True
-          dotnet-version: '8.0'
+          dotnet-version: 8.0.x
+          
       - run: ./build.sh
 
       - name: Login to Docker Hub
