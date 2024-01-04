@@ -50,6 +50,9 @@ Package()
 	  echo "Copying appsettings.json"
     cp ./config/appsettings.json $lOutputFolder/config/appsettings.json
     
+    echo "Removing appsettings.Development.json if exists"
+    rm $lOutputFolder/config/appsettings.Development.json
+    
     echo "Copying templates"
     cp -a ./config/templates/ $lOutputFolder/config/templates/
 
