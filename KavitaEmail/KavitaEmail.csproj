@@ -4,7 +4,7 @@
         <TargetFramework>net8.0</TargetFramework>
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
         <RootNamespace>Skeleton</RootNamespace>
-        <AssemblyVersion>0.1.26.0</AssemblyVersion>
+        <AssemblyVersion>0.1.25.0</AssemblyVersion>
     </PropertyGroup>
 
     <ItemGroup>
