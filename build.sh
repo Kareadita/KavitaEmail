@@ -51,7 +51,10 @@ Package()
     cp ./config/appsettings.json $lOutputFolder/config/appsettings.json
     
     echo "Removing appsettings.Development.json if exists"
-    rm $lOutputFolder/config/appsettings.Development.json
+    if [ -e "$lOutputFolder/config/appsettings.Development.json" ]; then
+        rm "$lOutputFolder/config/appsettings.Development.json"
+        echo "File removed successfully"
+    fi
     
     echo "Copying templates"
     cp -a ./config/templates/ $lOutputFolder/config/templates/
