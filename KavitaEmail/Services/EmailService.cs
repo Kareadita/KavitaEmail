@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Security.Authentication;
 using System.Threading.Tasks;
+using MailKit.Security;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -178,18 +180,17 @@ public class EmailService : IEmailService
             email.To.Add(new MailboxAddress(toEmail, toEmail));
         }
 
-        using var smtpClient = new MailKit.Net.Smtp.SmtpClient
-        {
-            Timeout = 20000
-        };
-      
-        await smtpClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port);
+        using var smtpClient = new MailKit.Net.Smtp.SmtpClient();
+        smtpClient.Timeout = 20000;
+        var ssl = _smtpConfig.EnableSsl ? SecureSocketOptions.Auto : SecureSocketOptions.None;
+
+        await smtpClient.ConnectAsync(_smtpConfig.Host, _smtpConfig.Port, ssl);
         if (!string.IsNullOrEmpty(_smtpConfig.UserName) && !string.IsNullOrEmpty(_smtpConfig.Password))
         {
             await smtpClient.AuthenticateAsync(_smtpConfig.UserName, _smtpConfig.Password);
         }
 
-        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+        ServicePointManager.SecurityProtocol = SecurityProtocolType.SystemDefault;
 
         try
         {
