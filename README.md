@@ -3,6 +3,9 @@ This is a simple email relay server that handles emails from Kavita application.
 will use the Kavita hosted email service. However, if a user wants to setup their own SMTP service, then they can run 
 their own instance of this microService.
 
+# Notice!
+This repository is no longer needed as of Kavita v0.7.14. 
+
 # Installation
 
 ### With Docker Run
